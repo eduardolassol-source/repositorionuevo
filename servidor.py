@@ -15,7 +15,9 @@ import threading
 import webbrowser
 import time
 
-PORT = 8520
+port = int(os.environ.get("PORT", 10000))
+
+app.run(host="0.0.0.0", port=port)
 API_KEY_FILE = os.path.join(os.path.dirname(__file__), 'api_key.txt')
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
