@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diligencia de Comunicación — Coljuegos GCT-FR-052</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#f1f5f9;min-height:100vh;color:#1e293b}
+  button{cursor:pointer;font-family:inherit}
+  input,select{font-family:inherit}
+
+  /* ── Layout ── */
+  .header{background:linear-gradient(135deg,#1e3a5f,#1d4ed8);padding:14px 28px;display:flex;align-items:center;gap:14px}
+  .header-icon{width:42px;height:42px;background:linear-gradient(135deg,#c8a84b,#e6c96e);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+  .header-title{color:#fff;font-size:15.5px;font-weight:700}
+  .header-sub{color:#93c5fd;font-size:11.5px;margin-top:2px}
+  .container{max-width:780px;margin:0 auto;padding:22px 16px 80px}
+
+  /* ── Steps ── */
+  .steps{display:flex;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);margin-bottom:22px}
+  .step{flex:1;padding:10px 4px;text-align:center;font-size:10.5px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;border-right:1px solid #f1f5f9;transition:background .25s;color:#94a3b8}
+  .step:last-child{border-right:none}
+  .step.active{background:linear-gradient(135deg,#1e3a5f,#1d4ed8);color:#fff}
+  .step.done{background:#f0fdf4;color:#15803d}
+  .step-icon{font-size:17px;margin-bottom:3px}
+
+  /* ── Card ── */
+  .card{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.08);overflow:hidden}
+  .card-head{background:linear-gradient(135deg,#1e3a5f,#1d4ed8);padding:18px 24px;border-bottom:3px solid #c8a84b}
+  .card-title{color:#fff;font-size:15.5px;font-weight:700}
+  .card-sub{color:#93c5fd;font-size:12px;margin-top:3px}
+  .card-body{padding:22px 24px}
+
+  /* ── Section title ── */
+  .sec{font-size:10.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#c8a84b;margin:20px 0 12px;padding-bottom:5px;border-bottom:1px solid #fef3c7}
+
+  /* ── Form elements ── */
+  .grid{display:grid;gap:14px}
+  .grid-2{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .grid-3{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field.wide{grid-column:1/-1}
+  label.lbl{font-size:10.5px;font-weight:700;color:#64748b;letter-spacing:.5px;text-transform:uppercase}
+  .req{color:#b45309}
+  input.inp,select.inp{padding:9px 11px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13.5px;background:#f8fafc;outline:none;width:100%;transition:border-color .15s}
+  input.inp:focus,select.inp:focus{border-color:#2563eb}
+
+  /* ── Buttons ── */
+  .btn-blue{padding:10px 22px;border-radius:9px;font-size:13px;font-weight:700;border:none;background:linear-gradient(135deg,#1e3a5f,#1d4ed8);color:#fff;box-shadow:0 2px 10px rgba(29,78,216,.3)}
+  .btn-blue:hover{opacity:.9}
+  .btn-outline{padding:9px 18px;border-radius:9px;font-size:13px;font-weight:600;background:transparent;border:1.5px solid #d1d5db;color:#64748b}
+  .btn-outline:hover{background:#f8fafc}
+  .btn-gold{padding:9px 18px;border-radius:9px;font-size:13px;font-weight:600;border:none;background:linear-gradient(135deg,#c8a84b,#a07830);color:#fff}
+  .btn-gold:hover{opacity:.9}
+  .btn-gold:disabled,.btn-blue:disabled{opacity:.5;cursor:not-allowed}
+
+  .actions{display:flex;gap:10px;justify-content:flex-end;padding-top:18px;border-top:1px solid #f1f5f9;margin-top:20px}
+
+  /* ── Alerts ── */
+  .err-box{background:#fef2f2;border:1.5px solid #fca5a5;border-radius:10px;padding:12px 16px;font-size:13px;color:#b91c1c;margin-top:12px}
+  .warn-box{background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:12px 16px;font-size:13px;color:#92400e;margin-top:12px}
+  .ok-box{background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:10px;padding:12px 16px;font-size:13px;color:#15803d;margin-top:8px;font-weight:500}
+
+  /* ── Upload zone ── */
+  .dropzone{border:2.5px dashed #cbd5e1;border-radius:14px;padding:44px 20px;text-align:center;cursor:pointer;background:#f8fafc;transition:all .2s}
+  .dropzone:hover,.dropzone.drag{border-color:#1d4ed8;background:#eff6ff}
+  .dropzone-icon{font-size:46px;margin-bottom:10px}
+  .dropzone-title{font-size:15.5px;font-weight:700;color:#1e3a5f;margin-bottom:5px}
+  .dropzone-sub{font-size:12.5px;color:#94a3b8}
+
+  /* ── Spinner ── */
+  .spinner-wrap{background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:12px;padding:20px;text-align:center;margin-top:16px}
+  .spinner{width:22px;height:22px;border:2.5px solid #bae6fd;border-top-color:#0284c7;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;margin-right:10px;vertical-align:middle}
+  .spinner-msg{font-weight:600;color:#0c4a6e;font-size:14px;vertical-align:middle}
+  .phases{display:flex;gap:6px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+  .phase{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;background:#e0f2fe;color:#7dd3fc}
+  .phase.active{background:#0284c7;color:#fff}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ── Extracted card ── */
+  .extracted{background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:14px 18px;margin-top:16px}
+  .ext-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .ext-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#15803d}
+  .ext-badge{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:20px}
+  .badge-ai{color:#7c3aed;background:#f5f3ff;border:1px solid #ddd6fe}
+  .badge-fast{color:#0369a1;background:#e0f2fe;border:1px solid #bae6fd}
+  .ext-row{display:flex;gap:8px;font-size:12.5px;margin-bottom:5px}
+  .ext-key{color:#6b7280;font-weight:600;min-width:120px;flex-shrink:0}
+  .ext-val{color:#1e293b;font-weight:500}
+
+  /* ── Sig pad ── */
+  .sig-label{font-size:10.5px;font-weight:700;color:#64748b;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+  .sig-wrap{border:1.5px dashed #cbd5e1;border-radius:10px;background:#fff;position:relative;cursor:crosshair;overflow:hidden}
+  .sig-wrap.saved{border:1.5px solid #16a34a}
+  .sig-canvas{display:block;width:100%;height:110px;touch-action:none}
+  .sig-hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:13px;pointer-events:none;font-style:italic}
+  .sig-actions{display:flex;gap:8px;margin-top:6px}
+
+  /* ── Summary cards ── */
+  .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+  .summary-card{background:#f8fafc;border-radius:10px;padding:12px 14px;border:1px solid #e2e8f0}
+  .summary-key{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#94a3b8;margin-bottom:4px}
+  .summary-val{font-size:13.5px;font-weight:600;color:#1e293b}
+  .sig-status{display:flex;gap:8px;margin-bottom:20px}
+  .sig-chip{flex:1;text-align:center;padding:8px 12px;border-radius:9px;font-size:12px;font-weight:600}
+  .sig-chip.ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d}
+  .sig-chip.no{background:#f8fafc;border:1px solid #e2e8f0;color:#94a3b8}
+
+  /* ── Adjust panel ── */
+  .adjust-panel{margin-top:22px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden}
+  .adjust-summary{padding:10px 16px;font-size:12px;color:#94a3b8;cursor:pointer;font-weight:600;user-select:none}
+  .adjust-body{padding:14px 16px;display:none}
+  .adjust-panel.open .adjust-body{display:block}
+  .adjust-note{font-size:11.5px;color:#64748b;margin-bottom:10px}
+
+  /* ── Hidden ── */
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-icon">⚖️</div>
+  <div>
+    <div class="header-title">Diligencia de Comunicación — Coljuegos</div>
+    <div class="header-sub">Sube el Auto Comisorio · Extracción automática · Firma y genera la página 3</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- STEPS -->
+  <div class="steps" id="stepBar"></div>
+
+  <!-- STEP 1: Upload -->
+  <div id="step1" class="card">
+    <div class="card-head">
+      <div class="card-title">📄 Sube el Auto Comisorio</div>
+      <div class="card-sub">Los datos se extraen automáticamente del documento</div>
+    </div>
+    <div class="card-body">
+      <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+        <input type="file" id="fileInput" accept=".pdf" style="display:none">
+        <div class="dropzone-icon">📄</div>
+        <div class="dropzone-title">Arrastra el PDF aquí o haz clic</div>
+        <div class="dropzone-sub">Auto Comisorio de Fiscalización · Coljuegos (.pdf)</div>
+      </div>
+      <div id="spinnerWrap" class="spinner-wrap hidden">
+        <span class="spinner"></span><span class="spinner-msg" id="spinnerMsg">Procesando...</span>
+        <div class="phases">
+          <div class="phase" id="ph0">Leyendo PDF</div>
+          <div class="phase" id="ph1">Extrayendo texto</div>
+          <div class="phase" id="ph2">Analizando campos</div>
+          <div class="phase" id="ph3">IA (si aplica)</div>
+        </div>
+      </div>
+      <div id="extractedCard" class="hidden"></div>
+      <div id="err1" class="hidden"></div>
+      <div id="warn1" class="hidden"></div>
+      <div class="actions hidden" id="act1">
+        <button class="btn-blue" onclick="goStep(2)">Continuar →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Datos visita -->
+  <div id="step2" class="card hidden">
+    <div class="card-head">
+      <div class="card-title">📋 Datos de la diligencia</div>
+      <div class="card-sub">Verifica y corrige los datos extraídos</div>
+    </div>
+    <div class="card-body">
+      <div class="sec">Fecha de la visita</div>
+      <div class="grid grid-3">
+        <div class="field"><label class="lbl">Día <span class="req">*</span></label><input class="inp" id="dia" placeholder="ej. 15"></div>
+        <div class="field"><label class="lbl">Mes <span class="req">*</span></label>
+          <select class="inp" id="mes">
+            <option value="">— Seleccionar —</option>
+            <option>enero</option><option>febrero</option><option>marzo</option><option>abril</option>
+            <option>mayo</option><option>junio</option><option>julio</option><option>agosto</option>
+            <option>septiembre</option><option>octubre</option><option>noviembre</option><option>diciembre</option>
+          </select>
+        </div>
+        <div class="field"><label class="lbl">Año <span class="req">*</span></label><input class="inp" id="anio" placeholder="2025"></div>
+      </div>
+
+      <div class="sec">Funcionarios comisionados</div>
+      <div class="grid grid-2">
+        <div class="field"><label class="lbl">Funcionario 1 — Nombre</label><input class="inp" id="func1nombre"></div>
+        <div class="field"><label class="lbl">Funcionario 1 — C.C.</label><input class="inp" id="func1cc"></div>
+        <div class="field"><label class="lbl">Funcionario 1 — Cargo</label><input class="inp" id="func1cargo"></div>
+        <div class="field"><label class="lbl">Funcionario 2 — Nombre</label><input class="inp" id="func2nombre"></div>
+        <div class="field"><label class="lbl">Funcionario 2 — C.C.</label><input class="inp" id="func2cc"></div>
+        <div class="field"><label class="lbl">Funcionario 2 — Cargo</label><input class="inp" id="func2cargo"></div>
+      </div>
+
+      <div class="sec">Lugar de la visita</div>
+      <div class="field" style="margin-bottom:14px"><label class="lbl">Establecimiento / Dirección</label><input class="inp" id="lugar"></div>
+      <div class="grid grid-3">
+        <div class="field"><label class="lbl">Municipio <span class="req">*</span></label><input class="inp" id="ciudad"></div>
+        <div class="field"><label class="lbl">Departamento</label><input class="inp" id="depto"></div>
+        <div class="field"><label class="lbl">Operador</label><input class="inp" id="operador"></div>
+      </div>
+
+      <div id="err2" class="hidden"></div>
+      <div class="actions">
+        <button class="btn-outline" onclick="goStep(1)">← Atrás</button>
+        <button class="btn-blue" onclick="validateAndGo(2,3)">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Quien recibe -->
+  <div id="step3" class="card hidden">
+    <div class="card-head">
+      <div class="card-title">👤 Quien recibe la comunicación</div>
+      <div class="card-sub">Persona que atiende la visita in situ</div>
+    </div>
+    <div class="card-body">
+      <div class="grid grid-2">
+        <div class="field wide"><label class="lbl">Nombre completo <span class="req">*</span></label><input class="inp" id="recNombre" placeholder="Nombre de quien atiende"></div>
+        <div class="field"><label class="lbl">Cédula de ciudadanía <span class="req">*</span></label><input class="inp" id="recCC" placeholder="Número de cédula"></div>
+        <div class="field"><label class="lbl">Expedida en</label><input class="inp" id="recCCExp" placeholder="Ciudad"></div>
+        <div class="field"><label class="lbl">Calidad / Cargo</label><input class="inp" id="recCalidad" placeholder="ej. Administrador"></div>
+        <div class="field"><label class="lbl">Dirección</label><input class="inp" id="recDir"></div>
+        <div class="field"><label class="lbl">Teléfono</label><input class="inp" id="recTel" type="tel"></div>
+        <div class="field"><label class="lbl">Email</label><input class="inp" id="recEmail" type="email"></div>
+      </div>
+
+      <div class="sec">Firma de quien recibe</div>
+      <div id="sigPad1"></div>
+
+      <div id="err3" class="hidden"></div>
+      <div id="warn3" class="hidden"></div>
+      <div class="actions">
+        <button class="btn-outline" onclick="goStep(2)">← Atrás</button>
+        <button class="btn-blue" onclick="validateAndGo(3,4)">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Funcionarios firmas -->
+  <div id="step4" class="card hidden">
+    <div class="card-head">
+      <div class="card-title">🪪 Funcionarios que comunican</div>
+      <div class="card-sub">Datos y firmas de los funcionarios comisionados</div>
+    </div>
+    <div class="card-body">
+      <div class="sec">Funcionario 1</div>
+      <div class="grid grid-2" style="margin-bottom:14px">
+        <div class="field"><label class="lbl">Nombre <span class="req">*</span></label><input class="inp" id="f1n"></div>
+        <div class="field"><label class="lbl">C.C. <span class="req">*</span></label><input class="inp" id="f1cc"></div>
+        <div class="field wide"><label class="lbl">Cargo</label><input class="inp" id="f1cargo"></div>
+      </div>
+      <div id="sigPad2"></div>
+
+      <div class="sec">Funcionario 2 <span style="font-weight:400;color:#9ca3af;text-transform:none;letter-spacing:0">(opcional)</span></div>
+      <div class="grid grid-2" style="margin-bottom:14px">
+        <div class="field"><label class="lbl">Nombre</label><input class="inp" id="f2n"></div>
+        <div class="field"><label class="lbl">C.C.</label><input class="inp" id="f2cc"></div>
+        <div class="field wide"><label class="lbl">Cargo</label><input class="inp" id="f2cargo"></div>
+      </div>
+      <div id="sigPad3"></div>
+
+      <div class="adjust-panel" id="adjustPanel">
+        <div class="adjust-summary" onclick="document.getElementById('adjustPanel').classList.toggle('open')">⚙️ Ajuste fino de posicionamiento (avanzado)</div>
+        <div class="adjust-body">
+          <div class="adjust-note">Si el texto no cae en las líneas del formulario, ajusta aquí. <strong>Offset Y positivo = baja el texto · negativo = sube.</strong> Prueba con ±5 y regenera.</div>
+          <div class="grid grid-3">
+            <div class="field"><label class="lbl">Offset X (pts)</label><input class="inp" id="offsetX" type="number" value="15" placeholder="15"></div>
+            <div class="field"><label class="lbl">Offset Y (pts)</label><input class="inp" id="offsetY" type="number" value="-7" step="0.5" placeholder="-7"></div>
+            <div class="field"><label class="lbl">Tamaño fuente</label><input class="inp" id="fontSize" type="number" value="15" placeholder="15"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="err4" class="hidden"></div>
+      <div id="warn4" class="hidden"></div>
+      <div class="actions">
+        <button class="btn-outline" onclick="goStep(3)">← Atrás</button>
+        <button class="btn-gold" id="btnGenerar" onclick="generatePDF()">⚙️ Generar PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: Descarga -->
+  <div id="step5" class="card hidden">
+    <div class="card-head">
+      <div class="card-title">📥 PDF listo para descargar</div>
+      <div class="card-sub">Diligencia completada exitosamente</div>
+    </div>
+    <div class="card-body">
+      <div class="summary-grid" id="summaryGrid"></div>
+      <div class="sig-status" id="sigStatus"></div>
+      <iframe id="pdfPreview" style="width:100%;height:520px;border:1.5px solid #e2e8f0;border-radius:12px;margin-bottom:18px;display:none"></iframe>
+      <div class="actions">
+        <button class="btn-outline" onclick="resetApp()">🔄 Nuevo documento</button>
+        <button class="btn-blue" onclick="downloadPDF()">📥 Descargar PDF</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+// ════════════════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════════════════
+const state = {
+  step: 1,
+  pdfBytes: null,
+  pdfBlob: null,
+  extracted: null,
+  usedAI: false,
+  sigs: { 1: null, 2: null, 3: null },
+};
+
+const MESES = ['','enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const STEPS_CONFIG = [
+  { n:1, label:'PDF',          icon:'📄' },
+  { n:2, label:'Visita',       icon:'📋' },
+  { n:3, label:'Receptor',     icon:'👤' },
+  { n:4, label:'Funcionarios', icon:'🪪' },
+  { n:5, label:'Listo',        icon:'✅' },
+];
+
+// ════════════════════════════════════════════════════════════════════════════
+// STEP BAR
+// ════════════════════════════════════════════════════════════════════════════
+function renderStepBar() {
+  const bar = document.getElementById('stepBar');
+  bar.innerHTML = STEPS_CONFIG.map(({ n, label, icon }) => {
+    const done    = state.step > n;
+    const current = state.step === n;
+    const cls     = current ? 'step active' : done ? 'step done' : 'step';
+    return `<div class="${cls}"><div class="step-icon">${done ? '✓' : icon}</div>${label}</div>`;
+  }).join('');
+}
+
+function goStep(n) {
+  document.querySelectorAll('[id^=step]').forEach(el => el.classList.add('hidden'));
+  document.getElementById('step' + n).classList.remove('hidden');
+  state.step = n;
+  renderStepBar();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Reinicializar sigPads al mostrarse — los canvas necesitan ser visibles para funcionar
+  if (n === 3) { createSigPad('sigPad1', 1, 'Firma del receptor'); }
+  if (n === 4) {
+    createSigPad('sigPad2', 2, 'Firma — Funcionario 1');
+    createSigPad('sigPad3', 3, 'Firma — Funcionario 2 (opcional)');
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// SIGNATURE PAD
+// ════════════════════════════════════════════════════════════════════════════
+function createSigPad(containerId, sigKey, label) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = `
+    <div style="margin-top:12px">
+      <div class="sig-label">${label}</div>
+      <div style="display:flex;gap:8px;margin-bottom:6px">
+        <button class="btn-outline" style="font-size:12px;padding:6px 12px" onclick="sigTabSwitch(${sigKey},'draw')">✏️ Dibujar</button>
+        <button class="btn-outline" style="font-size:12px;padding:6px 12px" onclick="sigTabSwitch(${sigKey},'upload')">📁 Subir imagen</button>
+      </div>
+      <div id="sigtab_draw_${sigKey}">
+        <div class="sig-wrap" id="wrap_${sigKey}">
+          <canvas class="sig-canvas" id="canvas_${sigKey}" width="680" height="130"></canvas>
+          <div class="sig-hint" id="hint_${sigKey}">Firma aquí</div>
+        </div>
+        <div class="sig-actions">
+          <button class="btn-outline" onclick="clearSig(${sigKey})">Limpiar</button>
+          <button class="btn-gold" onclick="saveSig(${sigKey})">Guardar firma ✓</button>
+        </div>
+      </div>
+      <div id="sigtab_upload_${sigKey}" style="display:none">
+        <div style="border:1.5px dashed #cbd5e1;border-radius:10px;padding:18px;text-align:center;background:#f8fafc">
+          <div style="font-size:13px;color:#64748b;margin-bottom:10px">Sube una imagen de la firma (PNG, JPG)</div>
+          <input type="file" id="sigfile_${sigKey}" accept="image/*" style="display:none" onchange="loadSigFile(${sigKey})">
+          <button class="btn-blue" style="font-size:12px;padding:7px 16px" onclick="document.getElementById('sigfile_${sigKey}').click()">Seleccionar imagen</button>
+        </div>
+        <canvas id="canvas_upload_${sigKey}" style="display:none"></canvas>
+      </div>
+      <div id="sigok_${sigKey}" class="ok-box hidden">✓ Firma capturada</div>
+    </div>`;
+
+  const canvas = document.getElementById('canvas_' + sigKey);
+  const ctx = canvas.getContext('2d');
+  let drawing = false;
+  let hasStrokes = false;
+
+  const pos = e => {
+    const r = canvas.getBoundingClientRect();
+    const sx = canvas.width / r.width, sy = canvas.height / r.height;
+    if (e.touches) return { x:(e.touches[0].clientX-r.left)*sx, y:(e.touches[0].clientY-r.top)*sy };
+    return { x:(e.clientX-r.left)*sx, y:(e.clientY-r.top)*sy };
+  };
+  canvas.addEventListener('mousedown',  e => { e.preventDefault(); drawing=true; hasStrokes=true; const p=pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); });
+  canvas.addEventListener('mousemove',  e => { e.preventDefault(); if(!drawing)return; const p=pos(e); ctx.lineTo(p.x,p.y); ctx.strokeStyle='#0f172a'; ctx.lineWidth=2.2; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke(); });
+  canvas.addEventListener('mouseup',    () => drawing=false);
+  canvas.addEventListener('mouseleave', () => drawing=false);
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing=true; hasStrokes=true; const p=pos(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); }, { passive:false });
+  canvas.addEventListener('touchmove',  e => { e.preventDefault(); if(!drawing)return; const p=pos(e); ctx.lineTo(p.x,p.y); ctx.strokeStyle='#0f172a'; ctx.lineWidth=2.2; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke(); }, { passive:false });
+  canvas.addEventListener('touchend',   () => drawing=false);
+
+  // expose hasStrokes on canvas element for saveSig
+  canvas._hasStrokes = () => hasStrokes;
+  canvas._clearStrokes = () => { hasStrokes = false; };
+}
+
+window.clearSig = function(k) {
+  const c = document.getElementById('canvas_' + k);
+  c.getContext('2d').clearRect(0, 0, c.width, c.height);
+  c._clearStrokes();
+  state.sigs[k] = null;
+  document.getElementById('wrap_' + k).classList.remove('saved');
+  document.getElementById('hint_' + k).style.display = '';
+  document.getElementById('sigok_' + k).classList.add('hidden');
+};
+window.saveSig = function(k) {
+  const c = document.getElementById('canvas_' + k);
+  if (!c._hasStrokes()) { alert('Dibuja la firma primero'); return; }
+  state.sigs[k] = c.toDataURL('image/png');
+  document.getElementById('wrap_' + k).classList.add('saved');
+  document.getElementById('hint_' + k).style.display = 'none';
+  document.getElementById('sigok_' + k).classList.remove('hidden');
+};
+
+// ════════════════════════════════════════════════════════════════════════════
+// FILE HANDLING & EXTRACTION
+// ════════════════════════════════════════════════════════════════════════════
+const dropzone = document.getElementById('dropzone');
+document.getElementById('fileInput').addEventListener('change', e => handleFile(e.target.files[0]));
+dropzone.addEventListener('dragover',  e => { e.preventDefault(); dropzone.classList.add('drag'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'));
+dropzone.addEventListener('drop',      e => { e.preventDefault(); dropzone.classList.remove('drag'); handleFile(e.dataTransfer.files[0]); });
+
+function setPhase(n, msg) {
+  document.getElementById('spinnerMsg').textContent = msg;
+  [0,1,2,3].forEach(i => document.getElementById('ph'+i).classList.toggle('active', i===n));
+}
+function showErr(elId, msg) {
+  const el = document.getElementById(elId);
+  el.className = 'err-box';
+  el.textContent = msg;
+}
+function hideErr(elId) {
+  const el = document.getElementById(elId);
+  el.className = 'hidden';
+  el.textContent = '';
+}
+function showWarn(elId, msg) {
+  const el = document.getElementById(elId);
+  el.className = 'warn-box';
+  el.textContent = msg;
+}
+
+async function handleFile(file) {
+  if (!file || file.type !== 'application/pdf') { showErr('err1','Por favor sube un archivo PDF válido.'); return; }
+  hideErr('err1');
+  document.getElementById('spinnerWrap').classList.remove('hidden');
+  document.getElementById('extractedCard').classList.add('hidden');
+  document.getElementById('act1').classList.add('hidden');
+
+  try {
+    const ab = await file.arrayBuffer();
+    state.pdfBytes = new Uint8Array(ab.slice(0));
+
+    setPhase(0, 'Leyendo el PDF...');
+    await tick();
+
+    setPhase(1, 'Extrayendo texto del documento...');
+    await tick();
+    const text = await extractTextFromPdf(state.pdfBytes);
+    console.log('Texto extraído (500 chars):', text.slice(0, 500));
+
+    setPhase(2, 'Analizando campos...');
+    await tick();
+    let data = regexExtract(text);
+    const score = scoreCoverage(data);
+    state.usedAI = false;
+
+    // Intentar IA si la cobertura es baja (PDF escaneado, encoding raro, etc.)
+    if (score < 4) {  // siempre usar IA para este PDF
+      setPhase(3, 'Extrayendo datos con IA...');
+      await tick();
+      try {
+        // Intentar primero con texto (rápido), si falla o está vacío mandar el PDF completo
+        console.log('Llamando API con PDF de', state.pdfBytes.length, 'bytes...');
+        const aiData = await callClaudePdf(state.pdfBytes);
+        console.log('Datos extraídos:', JSON.stringify(aiData));
+        state.usedAI = true;
+        data = Object.fromEntries(Object.entries(data).map(([k,v]) => [k, v || aiData[k] || '']));
+      } catch (e) {
+        console.error('IA falló:', e.message);
+        showWarn('warn1', '⚠️ Error extrayendo datos: ' + e.message + '. Completa manualmente.');
+      }
+    }
+
+    state.extracted = data;
+    populateForm(data);
+    renderExtractedCard(data);
+    document.getElementById('act1').classList.remove('hidden');
+  } catch (e) {
+    showErr('err1', 'Error al procesar el PDF: ' + e.message);
+  } finally {
+    document.getElementById('spinnerWrap').classList.add('hidden');
+  }
+}
+
+function tick() { return new Promise(r => setTimeout(r, 30)); }
+
+// ── Text extraction from PDF binary ─────────────────────────────────────────
+// ── PASO 1: Extraer texto con PDF.js (descomprime FlateDecode correctamente) ──
+async // No extracción local — el PDF usa Identity-H encoding (CIDFont comprimido)
+// que requiere un parser completo. Se usa la API directamente.
+async function extractTextFromPdf(u8) {
+  return ''; // señal para ir directo a la IA
+}
+
+// ── Regex extraction calibrated for GCT-FR-052 ──────────────────────────────
+function regexExtract(text) {
+  const CABECERA = new Set(['NOMBRE','APELLIDOS','CARGO','IDENTIFICACION','IDENTIFICACIÓN','Y','APELLIDO']);
+  const stripAcc = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  // Texto plano (saltos de línea → espacio) para campos de una sola línea
+  const flat = text.replace(/\n/g,' ').replace(/\s{2,}/g,' ');
+
+  const find = (patterns) => {
+    for (const p of patterns) {
+      const m = flat.match(p);
+      if (m?.[1]?.trim()) return m[1].trim();
+    }
+    return '';
+  };
+
+  // ── Extracción de funcionarios con 3 estrategias en cascada ──────────────
+  const funcionarios = [];
+
+  // ESTRATEGIA 1: línea completa "NOMBRE CARGO CC NUMERO" (caso ideal)
+  for (const linea of text.split('\n')) {
+    const l = linea.trim();
+    if (!l) continue;
+    const palabras = l.split(/\s+/);
+    if (palabras.length < 3) continue;
+    if (palabras.every(p => CABECERA.has(stripAcc(p.toUpperCase())))) continue;
+    const m = l.match(/^([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑ\s]{4,55}?)\s+((?:PROFESIONAL|CONTRATISTA|INSPECTOR|FUNCIONARIO|SUPERVISOR)[A-ZÁÉÍÓÚÑa-záéíóúñ\s\d]{0,50}?)\s+CC\s+(\d{6,12})\s*$/i);
+    if (m) {
+      const nombre = m[1].trim();
+      if (nombre.split(' ').length >= 2 && !funcionarios.find(f => f.nombre === nombre))
+        funcionarios.push({ nombre, cargo: m[2].trim(), cc: m[3].trim() });
+    }
+  }
+
+  // ESTRATEGIA 2: texto plano — cuando PDF.js junta columnas en una sola línea
+  if (funcionarios.length < 2) {
+    // Anclar a sección tabla para no capturar nombres de firmantes
+  const idxTabla = flat.toUpperCase().search(/IDENTIFICACI[OÓ]N/);
+  const seccion = idxTabla >= 0 ? flat.slice(idxTabla) : flat;
+
+    const blockRx = /([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑ\s]{5,55}?)\s+((?:PROFESIONAL|CONTRATISTA|INSPECTOR|FUNCIONARIO|SUPERVISOR)[A-ZÁÉÍÓÚÑa-záéíóúñ\s\d]{0,50}?)\s+CC\s+(\d{6,12})/gi;
+    for (const m of seccion.matchAll(blockRx)) {
+      let nombre = m[1].trim().replace(/\s+/g,' ');
+      const partes = nombre.split(' ');
+      let ini = 0;
+      for (let i = 0; i < partes.length; i++)
+        if (CABECERA.has(stripAcc(partes[i].toUpperCase()))) ini = i + 1;
+      nombre = partes.slice(ini).join(' ').trim();
+      if (nombre.split(' ').length >= 2 && !funcionarios.find(f => f.nombre === nombre))
+        funcionarios.push({ nombre, cargo: m[2].trim(), cc: m[3].trim() });
+      if (funcionarios.length === 2) break;
+    }
+  }
+
+  // ESTRATEGIA 3: reensamblar cuando PDF.js separa nombre y cargo/CC en líneas distintas
+  // Busca líneas de solo MAYÚSCULAS (= nombres) y luego asocia cargo+CC en texto plano
+  if (funcionarios.length < 2) {
+    for (const linea of text.split('\n')) {
+      const l = linea.trim();
+      const partes = l.split(/\s+/);
+      const esNombre = partes.length >= 2
+        && /^[A-ZÁÉÍÓÚÑ]/.test(l)
+        && partes.every(p => /^[A-ZÁÉÍÓÚÑ]+$/.test(p))
+        && !partes.every(p => CABECERA.has(stripAcc(p.toUpperCase())));
+      if (!esNombre) continue;
+      if (funcionarios.find(f => f.nombre === l)) continue;
+      const esc = l.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+      const rx = new RegExp(esc + '\\s+((?:PROFESIONAL|CONTRATISTA|INSPECTOR|FUNCIONARIO|SUPERVISOR)[\\w\\s]{0,50}?)\\s+CC\\s+(\\d{6,12})','i');
+      const m = flat.match(rx);
+      funcionarios.push({ nombre: l, cargo: m?.[1]?.trim() || '', cc: m?.[2]?.trim() || '' });
+      if (funcionarios.length === 2) break;
+    }
+  }
+
+  return {
+    func1_nombre: funcionarios[0]?.nombre || '',
+    func1_cc:     funcionarios[0]?.cc     || '',
+    func1_cargo:  funcionarios[0]?.cargo  || '',
+    func2_nombre: funcionarios[1]?.nombre || '',
+    func2_cc:     funcionarios[1]?.cc     || '',
+    func2_cargo:  funcionarios[1]?.cargo  || '',
+
+    local: find([
+      /auditor[íi]a en el (local\s+.{5,200}?)\s+en el municipio/i,
+      /auditor[íi]a en el (local\s+.{5,200}?)\s+ubicado/i,
+      /ubicado en (?:la\s+)?(.{5,200}?)\s+en el municipio/i,
+    ]),
+    municipio: find([
+      /municipio de ([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s\-]{2,35}?)\s+Departamento/i,
+      /municipio de ([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s\-]{2,35}?)[,\.]/i,
+    ]),
+    departamento: find([
+      /Departamento de ([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s\-]{2,30}?)\s+correspondiente/i,
+      /Departamento de ([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑa-záéíóúñ\s\-]{2,30}?)[,\.]/i,
+    ]),
+    operador: find([
+      /operador\s+([A-ZÁÉÍÓÚÑa-záéíóúñ\s\.\&\-]{3,70}?)\s+autorizado/i,
+      /Operador:\s*([A-ZÁÉÍÓÚÑa-záéíóúñ\s\.\&\-]{3,70}?)[,]/i,
+    ]),
+  };
+}
+
+function scoreCoverage(d) {
+  return ['func1_nombre','func1_cc','municipio','operador'].filter(k => d[k]).length;
+}
+
+// ── Claude Haiku fallback con PDF completo (para PDFs escaneados) ─────────────
+async function callClaudePdf(u8) {
+  // Convertir a base64
+  let bin = '';
+  const chunk = 8192;
+  for (let i = 0; i < u8.length; i += chunk)
+    bin += String.fromCharCode(...u8.subarray(i, i + chunk));
+  const b64 = btoa(bin);
+
+  // Llamar al servidor local (que sí puede llamar a Anthropic sin CORS)
+  const res = await fetch('http://localhost:8520/api/extraer', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ pdf_b64: b64 })
+  });
+  const respText = await res.text();
+  if (!res.ok) {
+    const err = JSON.parse(respText);
+    throw new Error(err.error || 'Error ' + res.status);
+  }
+  const data = JSON.parse(respText);
+  console.log('Datos extraídos:', JSON.stringify(data));
+  return data;
+}
+
+// ── Populate form ─────────────────────────────────────────────────────────────
+function populateForm(d) {
+  const now = new Date();
+  document.getElementById('dia').value   = String(now.getDate());
+  document.getElementById('mes').value   = MESES[now.getMonth()+1];
+  document.getElementById('anio').value  = String(now.getFullYear());
+
+  document.getElementById('func1nombre').value = d.func1_nombre || '';
+  document.getElementById('func1cc').value     = d.func1_cc     || '';
+  document.getElementById('func1cargo').value  = d.func1_cargo  || '';
+  document.getElementById('func2nombre').value = d.func2_nombre || '';
+  document.getElementById('func2cc').value     = d.func2_cc     || '';
+  document.getElementById('func2cargo').value  = d.func2_cargo  || '';
+  document.getElementById('lugar').value       = d.local        || '';
+  document.getElementById('ciudad').value      = d.municipio    || '';
+  document.getElementById('depto').value       = d.departamento || '';
+  document.getElementById('operador').value    = d.operador     || '';
+  document.getElementById('f1n').value         = d.func1_nombre || '';
+  document.getElementById('f1cc').value        = d.func1_cc     || '';
+  document.getElementById('f1cargo').value     = d.func1_cargo  || '';
+  document.getElementById('f2n').value         = d.func2_nombre || '';
+  document.getElementById('f2cc').value        = d.func2_cc     || '';
+  document.getElementById('f2cargo').value     = d.func2_cargo  || '';
+  document.getElementById('recDir').value       = d.local || '';
+}
+
+// ── Render extracted card ─────────────────────────────────────────────────────
+function renderExtractedCard(d) {
+  const badge = state.usedAI
+    ? '<span class="ext-badge badge-ai">🤖 IA</span>'
+    : '<span class="ext-badge badge-fast">⚡ Extracción directa</span>';
+  const rows = [
+    ['Funcionario 1', [d.func1_nombre, d.func1_cc && 'CC '+d.func1_cc, d.func1_cargo].filter(Boolean).join(' · ') || '—'],
+    ['Funcionario 2', [d.func2_nombre, d.func2_cc && 'CC '+d.func2_cc, d.func2_cargo].filter(Boolean).join(' · ') || '(no encontrado)'],
+    ['Establecimiento', d.local || '—'],
+    ['Municipio',       d.municipio || '—'],
+    ['Departamento',    d.departamento || '—'],
+    ['Operador',        d.operador || '—'],
+  ];
+  const el = document.getElementById('extractedCard');
+  el.className = 'extracted';
+  el.innerHTML = `
+    <div class="ext-head"><div class="ext-label">✅ Datos extraídos automáticamente</div>${badge}</div>
+    ${rows.map(([k,v]) => `<div class="ext-row"><span class="ext-key">${k}:</span><span class="ext-val">${v}</span></div>`).join('')}`;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// VALIDATION
+// ════════════════════════════════════════════════════════════════════════════
+function validateAndGo(from, to) {
+  hideErr('err'+from);
+  const warn = document.getElementById('warn'+from);
+  if (warn) { warn.className='hidden'; warn.textContent=''; }
+
+  if (from === 2) {
+    if (!v('dia') || !v('mes') || !v('anio')) return showErr('err2','La fecha de la visita es obligatoria.');
+    if (!v('ciudad')) return showErr('err2','El municipio es obligatorio.');
+  }
+  if (from === 3) {
+    if (!v('recNombre')) return showErr('err3','El nombre de quien recibe es obligatorio.');
+    if (!v('recCC'))     return showErr('err3','La cédula de quien recibe es obligatoria.');
+    if (!state.sigs[1]) showWarn('warn3','⚠️ No has capturado la firma del receptor. Puedes continuar, el PDF quedará sin esa firma.');
+  }
+  if (from === 4) {
+    if (!v('f1n'))  return showErr('err4','El nombre del Funcionario 1 es obligatorio.');
+    if (!v('f1cc')) return showErr('err4','La cédula del Funcionario 1 es obligatoria.');
+    if (!state.sigs[2]) showWarn('warn4','⚠️ No has capturado la firma del Funcionario 1.');
+  }
+  goStep(to);
+}
+function v(id) { return document.getElementById(id)?.value?.trim() || ''; }
+
+// ════════════════════════════════════════════════════════════════════════════
+// PDF GENERATION — coordenadas calibradas para GCT-FR-052 Ver.4
+// ════════════════════════════════════════════════════════════════════════════
+async function generatePDF() {
+  const btn = document.getElementById('btnGenerar');
+  btn.disabled = true;
+  btn.textContent = '⏳ Generando...';
+  hideErr('err4');
+
+  try {
+    const { PDFDocument, rgb, StandardFonts } = PDFLib;
+    const origDoc = await PDFDocument.load(state.pdfBytes);
+    const outDoc  = await PDFDocument.create();
+    const count   = origDoc.getPageCount();
+    const copied  = await outDoc.copyPages(origDoc, [...Array(count).keys()]);
+    copied.forEach(p => outDoc.addPage(p));
+
+    const page = outDoc.getPages()[count - 1];
+    const { width, height } = page.getSize();
+    // Verdana no está en StandardFonts — usar TimesRoman como alternativa serif clara
+    // o Helvetica. Para Verdana real necesitaría embed de archivo .ttf.
+    const font = await outDoc.embedFont(StandardFonts.TimesRoman);
+    const INK  = rgb(0.05, 0.05, 0.15);
+    const FS   = Number(v('fontSize')) || 15;
+    const DX   = Number(v('offsetX')) || 15;
+    const DY   = parseFloat(v('offsetY')) || -7;
+
+    const t = (text, x, y, opts={}) => {
+      if (!text) return;
+      page.drawText(String(text).substring(0,100), {
+        x,
+        y,
+        size: opts.size || FS,
+        font, color: opts.color || INK,
+        maxWidth: opts.w || 420,
+      });
+    };
+
+    const func1 = v('func1nombre') || v('f1n');
+    const func2 = v('func2nombre') || v('f2n');
+    const funcs = [func1, func2].filter(Boolean).join(' y ');
+
+    // ── COORDENADAS EXACTAS calibradas con pdfplumber en GCT-FR-052 Ver.4 ──────
+    // Página: 612 × 792 pts. y_pdflib = 792 - y_top_medida
+    // Fuente y offset del usuario aplicados via DX/DY/FS
+    // El texto va SIN offset de DX/DY en los campos del párrafo
+    // (los offsets son para ajuste fino si hay versiones distintas del formulario)
+
+    const H = 792;
+    const yp = top => H - top + DY;  // y pdf-lib con offset vertical
+
+    // ── Párrafo narrativo ────────────────────────────────────────────────────
+    t(v('dia'),        96 + DX, yp(187.5), { w: 55  });
+    t(v('mes'),       209 + DX, yp(187.5), { w: 110 });
+    t(v('anio'),      352 + DX, yp(187.5), { w: 70  });
+    t(funcs,           70 + DX, yp(200.0), { w: 370 });
+    t(v('lugar'),     281 + DX, yp(212.6), { w: 260 });
+    t(v('ciudad'),    189 + DX, yp(225.2), { w: 120 });
+    t(v('depto'),     417 + DX, yp(225.2), { w: 110 });
+    t(v('recNombre'), 220 + DX, yp(237.8), { w: 285 });
+    t(v('recCC'),     328 + DX, yp(250.3), { w: 100 });
+    t(v('recCCExp'),  432 + DX, yp(250.3), { w: 100 });
+    t(v('recCalidad'),120 + DX, yp(262.9), { w: 160 });
+
+    // ── Bloque "Quien recibe la comunicación" ────────────────────────────────
+    // Valores después de los labels (x = fin del label + 3pt)
+    t(v('recNombre'), 108 + DX, yp(396.4), { w: 220 });
+    t(v('recCC'),      93 + DX, yp(409.4), { w: 220 });
+    t(v('recDir'),    114 + DX, yp(422.4), { w: 220 });
+    t(v('recTel'),    112 + DX, yp(435.4), { w: 220 });
+    t(v('recEmail'),   98 + DX, yp(448.4), { w: 220 });
+
+    // ── Firma receptor (sobre el bloque, entre "comunicación" y "Nombre") ───
+    if (state.sigs[1]) {
+      const img = await outDoc.embedPng(dataUrlToU8(state.sigs[1]));
+      const sc  = Math.min(160 / img.width, 50 / img.height);
+      page.drawImage(img, { x: 70 + DX, y: yp(360) - img.height * sc, width: img.width * sc, height: img.height * sc });
+    }
+
+    // ── Bloque "Funcionarios que comunican" ──────────────────────────────────
+    // Firmas sobre los datos
+    if (state.sigs[2]) {
+      const img = await outDoc.embedPng(dataUrlToU8(state.sigs[2]));
+      const sc  = Math.min(160 / img.width, 45 / img.height);
+      page.drawImage(img, { x: 70 + DX, y: yp(545) - img.height * sc, width: img.width * sc, height: img.height * sc });
+    }
+    if (state.sigs[3]) {
+      const img = await outDoc.embedPng(dataUrlToU8(state.sigs[3]));
+      const sc  = Math.min(160 / img.width, 45 / img.height);
+      page.drawImage(img, { x: 324 + DX, y: yp(545) - img.height * sc, width: img.width * sc, height: img.height * sc });
+    }
+
+    // Datos funcionarios — DESPUÉS de los labels (medidos con pdfplumber)
+    // "Nombre" termina en x=105.6, "C.C." en x=90, "Cargo" en x=97.2
+    t(v('f1n'),     108 + DX, yp(582.5), { w: 200 });
+    t(v('f1cc'),     93 + DX, yp(595.5), { w: 200 });
+    t(v('f1cargo'), 100 + DX, yp(608.5), { w: 200 });
+    if (v('f2n')) {
+      t(v('f2n'),   362 + DX, yp(582.5), { w: 200 });
+      t(v('f2cc'),  347 + DX, yp(595.5), { w: 200 });
+      t(v('f2cargo'),354 + DX, yp(608.5), { w: 200 });
+    }
+    const bytes = await outDoc.save();
+    state.pdfBlob = new Blob([bytes], { type:'application/pdf' });
+
+    renderSummary();
+    goStep(5);
+
+    const iframe = document.getElementById('pdfPreview');
+    iframe.src = URL.createObjectURL(state.pdfBlob);
+    iframe.style.display = '';
+
+  } catch(e) {
+    showErr('err4', 'Error generando el PDF: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '⚙️ Generar PDF';
+  }
+}
+
+// ── Helper: dataUrl → Uint8Array ─────────────────────────────────────────────
+function dataUrlToU8(dataUrl) {
+  const bin = atob(dataUrl.split(',')[1]);
+  const arr = new Uint8Array(bin.length);
+  for (let i=0; i<bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return arr;
+}
+
+// ── Summary step 5 ───────────────────────────────────────────────────────────
+function renderSummary() {
+  const dia  = v('dia'), mes = v('mes'), anio = v('anio');
+  const grid = document.getElementById('summaryGrid');
+  const cards = [
+    ['Receptor',    v('recNombre') || '—'],
+    ['Municipio',   v('ciudad')    || '—'],
+    ['Fecha',       `${dia} de ${mes} de ${anio}`],
+    ['Funcionario', v('f1n')       || '—'],
+  ];
+  grid.innerHTML = cards.map(([k,val]) =>
+    `<div class="summary-card"><div class="summary-key">${k}</div><div class="summary-val">${val}</div></div>`
+  ).join('');
+
+  const ss = document.getElementById('sigStatus');
+  ss.innerHTML = [['Receptor',1],['Func. 1',2],['Func. 2',3]].map(([l,k]) =>
+    `<div class="sig-chip ${state.sigs[k]?'ok':'no'}">${state.sigs[k]?'✓':'○'} ${l}</div>`
+  ).join('');
+}
+
+// ── Download ─────────────────────────────────────────────────────────────────
+window.downloadPDF = function() {
+  if (!state.pdfBlob) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(state.pdfBlob);
+  const nombre = (v('recNombre') || 'sin_nombre').replace(/\s+/g,'_');
+  const fecha  = `${v('dia')}-${v('mes')}-${v('anio')}`;
+  a.download = `Diligencia_${nombre}_${fecha}.pdf`;
+  a.click();
+};
+
+// ── Reset ─────────────────────────────────────────────────────────────────────
+window.sigTabSwitch = function(k, tab) {
+  document.getElementById('sigtab_draw_'   + k).style.display = tab === 'draw'   ? '' : 'none';
+  document.getElementById('sigtab_upload_' + k).style.display = tab === 'upload' ? '' : 'none';
+};
+
+window.loadSigFile = function(k) {
+  const file = document.getElementById('sigfile_' + k).files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      // Renderizar en canvas oculto para obtener dataURL normalizado
+      const cv = document.getElementById('canvas_upload_' + k);
+      cv.width  = img.width;
+      cv.height = img.height;
+      cv.getContext('2d').drawImage(img, 0, 0);
+      state.sigs[k] = cv.toDataURL('image/png');
+      // Marcar como capturada
+      document.getElementById('sigok_' + k).classList.remove('hidden');
+      document.getElementById('sigok_' + k).textContent = '✓ Imagen cargada: ' + file.name;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+window.resetApp = function() {
+  state.pdfBytes = null;
+  state.pdfBlob  = null;
+  state.extracted = null;
+  state.sigs = { 1:null, 2:null, 3:null };
+  document.getElementById('fileInput').value = '';
+  document.getElementById('extractedCard').className = 'hidden';
+  document.getElementById('act1').classList.add('hidden');
+  hideErr('err1');
+  goStep(1);
+  // re-init sig pads
+  initSigPads();
+};
+
+// ════════════════════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════════════════════
+function initSigPads() {
+  createSigPad('sigPad1', 1, 'Firma del receptor');
+  createSigPad('sigPad2', 2, 'Firma — Funcionario 1');
+  createSigPad('sigPad3', 3, 'Firma — Funcionario 2 (opcional)');
+}
+
+renderStepBar();
+initSigPads();
+</script>
+</body>
+</html>
